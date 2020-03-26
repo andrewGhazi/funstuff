@@ -140,7 +140,7 @@ mom = matrix(nrow = M, ncol = d)
 mom_ind = (d+1):(2*d)
 theta_nought = c(0, -.847, .539) # lm(y ~ x) %>% summary
 theta[1,1:d] = theta_nought
-eps = 8e-4
+eps = 2e-3
 C_list = vector('list', M-1)
 u_list = vector('list', M-1)
 selected = vector('numeric', M-1)
@@ -493,9 +493,9 @@ plot_multi = function(nuts_df, frames_per_iter = 20, green_pause = 3, theta_max 
   
   tree_plot = dot_dat %>% 
     ggplot(aes(x = x, y = y)) +
-    geom_point(aes(color = j),
+    geom_point(aes(color = factor(j)),
                size = 3,
-               alpha = .5) +
+               alpha = .75) +
     geom_point(data = dot_dat %>% filter(selected_point, green_hold),
                color = 'green',
                size = 10) +
@@ -503,15 +503,16 @@ plot_multi = function(nuts_df, frames_per_iter = 20, green_pause = 3, theta_max 
                color = 'green', 
                size = 6,
                alpha = .5) + 
-    scale_color_viridis_c(end = .92,
-                          breaks = unique(dot_dat$j)) + 
+    # scale_color_viridis_c(end = .92, breaks = unique(dot_dat$j)) + 
+    scale_color_brewer(palette = 'Set1', direction = -1) + 
     geom_segment(data = rotated_mini_axes,
                  aes(x = x, 
                      xend = xend,
                      y = y, 
                      yend = yend)) + 
     geom_text(data = rotated_labels,
-              aes(x = x, y = y, label = label)) + 
+              aes(x = x, y = y, label = label),
+              size = 7.5, parse = TRUE) + 
     transition_manual(global_frame) +
     theme_bw() + 
     labs(color = 'tree depth') + 
@@ -529,5 +530,5 @@ plot_multi = function(nuts_df, frames_per_iter = 20, green_pause = 3, theta_max 
 #### Make some animations ----
 
 # nuts_df = nuts_df[3:10,]
-plot_multi(nuts_df[3:10,], green_pause = 4, frames_per_iter = 25, theta_max = 800, width = 1920, height = 1080)
-
+plot_multi(nuts_df[103:152,], green_pause = 4, frames_per_iter = 25, theta_max = 2500, width = 1920, height = 1080)
+  
